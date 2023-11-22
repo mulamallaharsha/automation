@@ -1,7 +1,15 @@
 package com.amazon.testing.v1;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.Duration;
+import java.util.Calendar;
+import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterTest;
@@ -31,7 +39,7 @@ public class CapstoneFuncationalityTest
 	}
 
 	@Test
-	public void test_signup() {
+	public void test_signup() throws IOException {
 		driver.get(
 				"https://www.amazon.in/ap/register?showRememberMe=true&openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.in%2F%3Fref_%3Dnav_custrec_signin&prevRID=X9GXWBN6Q4KET7SGRQBM&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=inflex&openid.mode=checkid_setup&prepopulatedLoginId=&failedSignInCount=0&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&pageId=inflex&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0");
 
@@ -40,6 +48,7 @@ public class CapstoneFuncationalityTest
 		registration.set_phone_number("9876543210");
 		registration.set_email("automationuser@gmail.com");
 		registration.set_password("automation@123");
+		this.takeScreenShot();
 
 	}
 
@@ -54,7 +63,7 @@ public class CapstoneFuncationalityTest
 	}
 
 	@Test
-	public void test_search_item_and_add_to_cart() throws InterruptedException {
+	public void test_search_item_and_add_to_cart() throws InterruptedException, IOException {
 		driver.get("https://www.amazon.in");
 
 		AddtoCart sut = new AddtoCart(driver);
@@ -69,9 +78,11 @@ public class CapstoneFuncationalityTest
 		}
 
 		if (sut.isStockAvailable()) {
-			sut.waitForAddToCartButtonVisible();
+//			sut.waitForAddToCartButtonVisible();
 			sut.clickAddToCartButton();
 		}
+
+		this.takeScreenShot();
 
 		driver.close();
 		driver.switchTo().window(winHandleBefore);
@@ -81,5 +92,17 @@ public class CapstoneFuncationalityTest
 	public void closeDriver() {
 
 		driver.close();
+	}
+
+	private void takeScreenShot() throws IOException {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+		TakesScreenshot scrShot = ((TakesScreenshot) this.driver);
+		// Call getScreenshotAs method to create image file
+		File SrcFile = scrShot.getScreenshotAs(OutputType.FILE);
+		// Move image file to new destination
+		File DestFile = new File("C://Users//Gaming-PC//Pictures//" + timestamp.getTime() + ".png");
+		FileUtils.copyFile(SrcFile, DestFile);
 	}
 }
