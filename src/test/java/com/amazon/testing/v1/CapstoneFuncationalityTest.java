@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -58,8 +59,10 @@ public class CapstoneFuncationalityTest
 				"https://www.amazon.in/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.in%2F%3Fref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=inflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0");
 
 		LoginPage login = new LoginPage(driver);
-		login.set_email("automationuser@gmail.com");
-
+		login.set_email("sandojushirisha26@gmail.com");
+		login.clickContinue();
+		login.set_password("Sirisha@123");
+		login.submitButton();
 	}
 
 	@Test
@@ -87,11 +90,41 @@ public class CapstoneFuncationalityTest
 		driver.close();
 		driver.switchTo().window(winHandleBefore);
 	}
+	
+	@Test
+	public void test_buy_item() {
+		driver.get("https://www.amazon.in");
+
+		AddtoCart sut = new AddtoCart(driver);
+		sut.searchItem("alexa");
+		sut.clickSearchButton();
+
+		sut.findItemAndClick("Echo Dot (4th Gen, 2020 release) with clock");
+		String winHandleBefore = driver.getWindowHandle();
+
+		for (String winHandle : driver.getWindowHandles()) {
+			driver.switchTo().window(winHandle);
+		}
+
+		if (sut.isStockAvailable()) {
+			driver.findElement(By.id("buy-now-button")).click();
+		}
+		
+		LoginPage login = new LoginPage(driver);
+		login.set_email("sandojushirisha26@gmail.com");
+		login.clickContinue();
+		login.set_password("Sirisha@123");
+		login.submitButton();
+		
+		driver.close();
+		driver.switchTo().window(winHandleBefore);
+		
+	}
 
 	@AfterTest
 	public void closeDriver() {
 
-		driver.close();
+//		driver.close();
 	}
 
 	private void takeScreenShot() throws IOException {
